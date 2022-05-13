@@ -6,8 +6,21 @@
 //#include "thread1.h"
 #include <stdint.h>
 
+#define SET_SYSTICK_FRAME_SIZE(handlerAddr, frameSize)                                                                                                                                                 \
+    __asm__("LDR r1,%0\n\t"                                                                                                                                                                            \
+            "LDRB r0,[r1]\n\t"                                                                                                                                                                         \
+            "MOV r2,#0xF\n\t"                                                                                                                                                                          \
+            "AND r0,r0,r2\n\t"                                                                                                                                                                         \
+            "MOV r2,#4\n\t"                                                                                                                                                                            \
+            "MUL r0,r0,r2\n\t"                                                                                                                                                                         \
+            "STRB r0,%1"                                                                                                                                                                               \
+            : "=m"(handlerAddr)                                                                                                                                                                        \
+            : "m"(frameSize));
+
 thread_t * currentThread;
 listNode_t * threadList;
+
+uint8_t sysTickFrameSize = 0;
 
 uint32_t a = 0;
 uint32_t b = 0;
@@ -45,15 +58,15 @@ void setupSystick(void) {
 }
 
 void SysTick_Handler(void) {
-    uint32_t handlerAddr = (uint32_t)&SysTick_Handler;
+    /*uint32_t handlerAddr = (uint32_t)&SysTick_Handler;
     handlerAddr++;
-    uint8_t frameSize = 0;
+    uint8_t frameSize = 0;*/
 
     threadList = threadList->next;
 
     // Get stack frame size from generated machine code
     // arm-none-eabi-gcc uses R7 as a stack frame pointer
-    __asm__("LDR r1,%0\n\t"
+    /*__asm__("LDR r1,%0\n\t"
             "LDRB r0,[r1]\n\t"
             "MOV r2,#0xF\n\t"
             "AND r0,r0,r2\n\t"
@@ -62,12 +75,13 @@ void SysTick_Handler(void) {
             "STRB r0,%1"
             : "=m"(handlerAddr)
             : "m"(frameSize));
-
-    __asm__( //"SUB sp,%1\n\t"
-        "PUSH {r11,r10,r9,r8,r7,r6,r5,r4}\n\t"
-        "STR sp,%0\n\t"
-        : "=m"(currentThread->stackPtr)
-        : "m"(frameSize));
+*/
+    __asm__("LDRB r0,%1\n\t"
+            "ADD sp,r0\n\t"
+            "PUSH {r11,r10,r9,r8,r7,r6,r5,r4}\n\t"
+            "STR sp,%0\n\t"
+            : "=m"(currentThread->stackPtr)
+            : "m"(sysTickFrameSize));
 
     currentThread = get(threadList, 0);
 
@@ -78,11 +92,15 @@ void SysTick_Handler(void) {
             "PUSH {r7}\n\t"
             "SUB r7,sp,r0\n\t"
             : "=m"(currentThread->stackPtr)
-            : "m"(frameSize));
+            : "m"(sysTickFrameSize));
 }
 
 int main() {
     initHeap();
+
+    uint32_t handlerAddr = (uint32_t)&SysTick_Handler;
+    handlerAddr++;
+    SET_SYSTICK_FRAME_SIZE(handlerAddr, sysTickFrameSize);
 
     threadList = createList();
 
