@@ -13,6 +13,9 @@ void initHeap() {
 void * allocateMemory(uint32_t memorySize) {
     memoryBlock_t * blockHeader = (memoryBlock_t *)&heapStart;
     while ((uint32_t)blockHeader < (uint32_t)&heapEnd) {
+        if ((uint32_t)blockHeader + (uint32_t)memorySize >= (uint32_t)&heapEnd) {
+            return (void *)-1;
+        }
         if (blockHeader->isAllocated || blockHeader->size < memorySize + 1) {
             blockHeader = blockHeader + blockHeader->size;
         } else {
