@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+int a = 0;
+
 void main0();
 
 #endif

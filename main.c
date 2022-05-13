@@ -2,17 +2,38 @@
 #include "memory.h"
 #include "stm32f10x.h"
 #include "thread.h"
-#include "thread0.h"
+//#include "thread0.h"
+//#include "thread1.h"
 #include <stdint.h>
 
 thread_t * currentThread;
+listNode_t * threadList;
+
+uint32_t a = 0;
+uint32_t b = 0;
+
+void main0() {
+    while (1) {
+        a++;
+    }
+}
+
+void main1() {
+    while (1) {
+        b++;
+    }
+}
 
 void setThreadStack(thread_t * thread) {
-    *thread->stackPtr-- = 0x41000000;
+    *thread->stackPtr-- = 0x01000000;
     *thread->stackPtr-- = (uint32_t)thread->task;
     *thread->stackPtr-- = (uint32_t)thread->task;
-    //*thread->stackPtr-- = 0xFFFFFFF9;
-    for (uint8_t i = 0; i < 12; i++) {
+
+    for (uint8_t i = 0; i < 5; i++) {
+        *thread->stackPtr-- = 0;
+    }
+    *thread->stackPtr-- = 0xFFFFFFF9;
+    for (uint8_t i = 0; i < 7; i++) {
         *thread->stackPtr-- = 0;
     }
 }
@@ -28,43 +49,34 @@ void SysTick_Handler(void) {
     handlerAddr++;
     uint8_t frameSize = 0;
 
+    threadList = threadList->next;
+
     // Get stack frame size from generated machine code
     // arm-none-eabi-gcc uses R7 as a stack frame pointer
-    __asm__("LDR r5,%0\n\t"
-            "LDRB r4,[r5]\n\t"
-            "MOV r6,#0xF\n\t"
-            "AND r4,r4,r6\n\t"
-            "MOV r6,#4\n\t"
-            "MUL r4,r4,r6\n\t"
-            "STRB r4,%1"
+    __asm__("LDR r1,%0\n\t"
+            "LDRB r0,[r1]\n\t"
+            "MOV r2,#0xF\n\t"
+            "AND r0,r0,r2\n\t"
+            "MOV r2,#4\n\t"
+            "MUL r0,r0,r2\n\t"
+            "STRB r0,%1"
             : "=m"(handlerAddr)
             : "m"(frameSize));
 
-    /*__asm__("LDR r0,%0\n\t"
-            "LDRB r1,%1\n\t"
-            "ADD r2,sp,r1\n\t"
-            "STR r2,[r0]"
-            : "=m"(stackPtrAddr)
-            : "m"(frameSize));*/
-    // currentThread = currentThread->next;
+    __asm__( //"SUB sp,%1\n\t"
+        "PUSH {r11,r10,r9,r8,r7,r6,r5,r4}\n\t"
+        "STR sp,%0\n\t"
+        : "=m"(currentThread->stackPtr)
+        : "m"(frameSize));
 
-    // Push thread registers to its stack
-
-    /* __asm__("PUSH {r4-r11}\n\t"
-             "LDRB r0,%1\n\t"
-             "SUB r7,sp,r0\n\t"
-             "SUB r7,#16"
-             : "=m"(currentThread->stackPtr)
-             : "m"(frameSize));
-
-     currentThread = currentThread->next;*/
+    currentThread = get(threadList, 0);
 
     // Pop registers from the thread we are switching to
-    __asm__("LDR sp,%0\n\t"
-            "LDRB r0,%1\n\t"
+    __asm__("LDRB r0,%1\n\t"
+            "LDR sp,%0\n\t"
             "POP {r4-r11}\n\t"
+            "PUSH {r7}\n\t"
             "SUB r7,sp,r0\n\t"
-            "SUB r7,r7,#4\n\t"
             : "=m"(currentThread->stackPtr)
             : "m"(frameSize));
 }
@@ -72,12 +84,25 @@ void SysTick_Handler(void) {
 int main() {
     initHeap();
 
+    threadList = createList();
+
+    thread_t initialThread;
+
     thread_t thread0;
     thread0.task = &main0;
     thread0.stackPtr = &thread0.stack[THREAD_STACK_SIZE - 1];
     setThreadStack(&thread0);
 
-    currentThread = &thread0;
+    thread_t thread1;
+    thread1.task = &main1;
+    thread1.stackPtr = &thread1.stack[THREAD_STACK_SIZE - 1];
+    setThreadStack(&thread1);
+
+    add(threadList, &thread0);
+    add(threadList, &thread1);
+    threadList->next->next = threadList;
+
+    currentThread = &initialThread;
 
     setupSystick();
 

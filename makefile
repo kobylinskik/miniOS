@@ -40,7 +40,7 @@ INPUT += $(LIST_SRC)/list.c
 INPUT += $(DEVICE_SUPPORT_DIR)/startup/gcc_ride7/startup_stm32f10x_ld.s
 INPUT += $(DEVICE_SUPPORT_DIR)/system_stm32f10x.c
 INPUT += $(CORE_SUPPORT_DIR)/core_cm3.c
-INPUT += $(wildcard $(SRC_DIR)/*.c)
+#INPUT += $(wildcard $(SRC_DIR)/*.c)
 
 ASM_INPUT = main.c
 ASM_INPUT += $(DEVICE_SUPPORT_DIR)/startup/gcc_ride7/startup_stm32f10x_ld.s
