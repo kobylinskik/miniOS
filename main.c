@@ -33,7 +33,7 @@ void setThreadStack(thread_t * thread) {
         *thread->stackPtr-- = 0;
     }
     *thread->stackPtr-- = 0xFFFFFFF9;
-    for (uint8_t i = 0; i < 7; i++) {
+    for (uint8_t i = 0; i < 8; i++) {
         *thread->stackPtr-- = 0;
     }
 }
@@ -46,8 +46,7 @@ void setupSystick(void) {
 
 void SysTick_Handler(void) {
     // Push thread registers to stack
-    __asm__("ADD sp,#4\n\t"
-            "PUSH {r11,r10,r9,r8,r7,r6,r5,r4}\n\t"
+    __asm__("PUSH {r11,r10,r9,r8,r7,r6,r5,r4}\n\t"
             "STR sp,%0\n\t"
             : "=m"(currentThread->stackPtr));
 
@@ -56,8 +55,7 @@ void SysTick_Handler(void) {
 
     // Pop registers from the thread we are switching to
     __asm__("LDR sp,%0\n\t"
-            "POP {r4-r11,lr}\n\t"
-            "PUSH {lr,r7}\n\t"
+            "POP {r4-r11}\n\t"
             : "=m"(currentThread->stackPtr));
 }
 
