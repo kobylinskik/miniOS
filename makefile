@@ -35,7 +35,10 @@ CCFLAGS += -g
 
 INPUT = main.c
 INPUT += $(MEMORY_MANAGER_SRC)/memory.c
-INPUT += $(THREAD_MANAGER_SRC)/thread.c
+INPUT += $(wildcard $(THREAD_MANAGER_SRC)/*.c)
+#INPUT += $(THREAD_MANAGER_SRC)/thread.c
+#INPUT += $(THREAD_MANAGER_SRC)/threadList.c
+#INPUT += $(THREAD_MANAGER_SRC)/threadManager.c
 INPUT += $(LIST_SRC)/list.c
 INPUT += $(DEVICE_SUPPORT_DIR)/startup/gcc_ride7/startup_stm32f10x_ld.s
 INPUT += $(DEVICE_SUPPORT_DIR)/system_stm32f10x.c
@@ -44,6 +47,7 @@ INPUT += $(CORE_SUPPORT_DIR)/core_cm3.c
 
 ASM_INPUT = main.c
 ASM_INPUT += $(DEVICE_SUPPORT_DIR)/startup/gcc_ride7/startup_stm32f10x_ld.s
+ASM_INPUT += $(THREAD_MANAGER_SRC)/threadManager.c
 
 LD = -T./linkerScript.ld
 
