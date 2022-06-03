@@ -9,7 +9,7 @@ typedef struct threadListNode {
     struct threadListNode * next;
 } threadListNode_t;
 
-threadListNode_t * createThreadList(void);
+threadListNode_t * tl_createThreadList(void);
 void tl_addThread(threadListNode_t * head, void (*task)(void));
 
 #endif

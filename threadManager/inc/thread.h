@@ -11,6 +11,6 @@ typedef struct thread {
     uint32_t stack[THREAD_STACK_SIZE];
 } thread_t;
 
-thread_t * createThread(void (*task)());
+thread_t * thd_createThread(void (*task)());
 
 #endif
