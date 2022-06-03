@@ -1,6 +1,6 @@
 #include "thread.h"
 
-void setThreadStack(thread_t * thread) {
+void thd_setThreadStack(thread_t * thread) {
     *thread->stackPtr-- = 0x01000000;
     *thread->stackPtr-- = (uint32_t)thread->task;
     *thread->stackPtr-- = (uint32_t)thread->task;
@@ -14,10 +14,10 @@ void setThreadStack(thread_t * thread) {
     }
 }
 
-thread_t * createThread(void (*task)()) {
-    thread_t * thread = allocateMemory(sizeof(thread_t));
+thread_t * thd_createThread(void (*task)()) {
+    thread_t * thread = memMang_malloc(sizeof(thread_t));
     thread->task = task;
     thread->stackPtr = thread->stack + THREAD_STACK_SIZE - 1;
-    setThreadStack(thread);
+    thd_setThreadStack(thread);
     return thread;
 };

@@ -3,13 +3,15 @@
 
 #include <stdint.h>
 
-typedef struct {
-    uint32_t isAllocated : 1;
-    uint32_t size : 31;
-} memoryBlock_t;
+typedef uint32_t pointerSize_t;
 
-void initHeap();
-void * allocateMemory(uint32_t memorySize);
-void freeMemory(void * memoryAddress);
+typedef struct {
+    pointerSize_t isAllocated : 1;
+    pointerSize_t size : 31;
+} MemoryBlockHeader_t;
+
+void memMang_initHeap(void);
+void * memMang_malloc(uint32_t requestedSize);
+void memMang_free(void * memoryAddress);
 
 #endif

@@ -13,6 +13,7 @@ listNode_t * threadList;
 
 uint32_t a = 0;
 uint32_t b = 0;
+uint32_t c = 0;
 
 void main0() {
     while (1) {
@@ -23,6 +24,12 @@ void main0() {
 void main1() {
     while (1) {
         b++;
+    }
+}
+
+void main2() {
+    while (1) {
+        c++;
     }
 }
 
@@ -38,7 +45,7 @@ void SysTick_Handler(void) {
             "STR sp,%0\n\t"
             : "=m"(threadManager->currentThread->stackPtr));
 
-    switchThread(threadManager);
+    thdMang_switchThread(threadManager);
 
     // Pop registers from the thread we are switching to
     __asm__("LDR sp,%0\n\t"
@@ -47,7 +54,7 @@ void SysTick_Handler(void) {
 }
 
 int main() {
-    initHeap();
+    memMang_initHeap();
 
     threadList = createList();
 
@@ -64,10 +71,11 @@ int main() {
     thread1.stackPtr = &thread1.stack[THREAD_STACK_SIZE - 1];
     setThreadStack(&thread1);*/
 
-    threadManager = createThreadManager();
+    threadManager = thdMang_createThreadManager();
 
-    addThread(threadManager, &main0);
-    addThread(threadManager, &main1);
+    thdMang_addThread(threadManager, &main0);
+    thdMang_addThread(threadManager, &main1);
+    thdMang_addThread(threadManager, &main2);
 
     /*
     thread_t * thread0 = createThread(&main0);

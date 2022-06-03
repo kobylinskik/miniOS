@@ -1,7 +1,7 @@
 #include "threadList.h"
 
-threadListNode_t * createThreadList(void) {
-    threadListNode_t * head = allocateMemory(sizeof(threadListNode_t));
+threadListNode_t * tl_createThreadList(void) {
+    threadListNode_t * head = memMang_malloc(sizeof(threadListNode_t));
     head->thread = 0;
     head->next = 0;
     return head;
@@ -13,9 +13,9 @@ void tl_addThread(threadListNode_t * head, void (*task)(void)) {
         while (currentNode->next != head) {
             currentNode = currentNode->next;
         }
-        currentNode->next = allocateMemory(sizeof(threadListNode_t));
+        currentNode->next = memMang_malloc(sizeof(threadListNode_t));
         currentNode = currentNode->next;
     }
-    currentNode->thread = createThread(task);
+    currentNode->thread = thd_createThread(task);
     currentNode->next = head;
 }
