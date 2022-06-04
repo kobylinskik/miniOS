@@ -14,18 +14,19 @@ ListNode_t * threadList;
 uint32_t a = 0;
 uint32_t b = 0;
 uint32_t c = 0;
+uint32_t idleCount = 0;
 
 void main0() {
     while (1) {
         a++;
-        thd_delay(threadManager->currentThread, 1);
+        thd_delay(threadManager->currentThread, 5);
     }
 }
 
 void main1() {
     while (1) {
         b++;
-        thd_delay(threadManager->currentThread, 1);
+        thd_delay(threadManager->currentThread, 5);
     }
 }
 
@@ -33,6 +34,14 @@ void main2() {
     while (1) {
         c++;
         thd_delay(threadManager->currentThread, 10);
+    }
+}
+
+void idleTask() {
+    while (1) {
+        idleCount++;
+        for (int i = 0; i < 100000; i++) {
+        }
     }
 }
 
@@ -62,8 +71,6 @@ int main() {
 
     threadList = createList();
 
-    Thread_t initialThread;
-
     /*Thread_t thread0;
     thread0.task = &main0;
     thread0.stackPtr = &thread0.stack[THREAD_STACK_SIZE - 1];
@@ -75,7 +82,7 @@ int main() {
     thread1.stackPtr = &thread1.stack[THREAD_STACK_SIZE - 1];
     setThreadStack(&thread1);*/
 
-    threadManager = thdMang_createThreadManager();
+    threadManager = thdMang_createThreadManager(&idleTask);
 
     thdMang_addThread(threadManager, &main0);
     thdMang_addThread(threadManager, &main1);
@@ -88,9 +95,10 @@ int main() {
     add(threadList, thread1);
     threadList->next->next = threadList;
 */
-    threadManager->currentThread = &initialThread;
 
     setupSystick();
+
+    thdMang_start(threadManager);
 
     int x = 0;
     while (1) {
