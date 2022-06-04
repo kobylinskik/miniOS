@@ -21,24 +21,21 @@ LIST_INC = $(LIST_DIR)/inc
 
 CC = arm-none-eabi-gcc
 
-CCFLAGS = -mcpu=cortex-m3
-CCFLAGS += -mthumb
-CCFLAGS += -I.
-CCFLAGS += -I$(INC_DIR)
-CCFLAGS += -I$(CORE_SUPPORT_DIR)
-CCFLAGS += -I$(DEVICE_SUPPORT_DIR)
-CCFLAGS += -I$(MEMORY_MANAGER_INC)
-CCFLAGS += -I$(THREAD_MANAGER_INC)
-CCFLAGS += -I$(LIST_INC)
-CCFLAGS += --specs=nosys.specs
-CCFLAGS += -g
+CC_FLAGS = -mcpu=cortex-m3
+CC_FLAGS += -mthumb
+CC_FLAGS += -I.
+CC_FLAGS += -I$(INC_DIR)
+CC_FLAGS += -I$(CORE_SUPPORT_DIR)
+CC_FLAGS += -I$(DEVICE_SUPPORT_DIR)
+CC_FLAGS += -I$(MEMORY_MANAGER_INC)
+CC_FLAGS += -I$(THREAD_MANAGER_INC)
+CC_FLAGS += -I$(LIST_INC)
+CC_FLAGS += --specs=nosys.specs
+CC_FLAGS += -g
 
 INPUT = main.c
 INPUT += $(MEMORY_MANAGER_SRC)/memory.c
 INPUT += $(wildcard $(THREAD_MANAGER_SRC)/*.c)
-#INPUT += $(THREAD_MANAGER_SRC)/thread.c
-#INPUT += $(THREAD_MANAGER_SRC)/threadList.c
-#INPUT += $(THREAD_MANAGER_SRC)/threadManager.c
 INPUT += $(LIST_SRC)/list.c
 INPUT += $(DEVICE_SUPPORT_DIR)/startup/gcc_ride7/startup_stm32f10x_ld.s
 INPUT += $(DEVICE_SUPPORT_DIR)/system_stm32f10x.c
@@ -54,7 +51,7 @@ LD = -T./linkerScript.ld
 OUTPUT = -o $(TARGET)
 
 main:
-	$(CC) $(CCFLAGS) $(INPUT) $(LD) $(OUTPUT)
+	$(CC) $(CC_FLAGS) $(INPUT) $(LD) $(OUTPUT)
 
 assembly:
-	$(CC) $(CCFLAGS) -S $(ASM_INPUT) $(LD)
+	$(CC) $(CC_FLAGS) -S $(ASM_INPUT) $(LD)

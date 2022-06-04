@@ -5,12 +5,13 @@
 #include "threadList.h"
 
 typedef struct {
-    thread_t * currentThread;
-    threadListNode_t * threadList;
-} threadManager_t;
+    Thread_t * currentThread;
+    ThreadListNode_t * threadList;
+} ThreadManager_t;
 
-threadManager_t * thdMang_createThreadManager(void);
-void thdMang_addThread(threadManager_t * threadManager, void (*task)(void));
-void thdMang_switchThread(threadManager_t * threadManager);
+ThreadManager_t * thdMang_createThreadManager(void);
+void thdMang_addThread(ThreadManager_t * threadManager, void (*task)(void));
+void thdMang_switchThread(ThreadManager_t * threadManager);
+void thdMang_countDownDelays(ThreadManager_t * threadManager);
 
 #endif

@@ -4,12 +4,12 @@
 #include "memory.h"
 #include "thread.h"
 
-typedef struct threadListNode {
-    thread_t * thread;
-    struct threadListNode * next;
-} threadListNode_t;
+typedef struct ThreadListNode {
+    Thread_t * thread;
+    struct ThreadListNode * next;
+} ThreadListNode_t;
 
-threadListNode_t * tl_createThreadList(void);
-void tl_addThread(threadListNode_t * head, void (*task)(void));
+ThreadListNode_t * tl_createThreadList(void);
+void tl_addThread(ThreadListNode_t * head, void (*task)(void));
 
 #endif
