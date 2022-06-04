@@ -9,8 +9,10 @@ typedef struct thread {
     void (*task)(void);
     uint32_t * stackPtr;
     uint32_t stack[THREAD_STACK_SIZE];
-} thread_t;
+    uint32_t delayTicks;
+} Thread_t;
 
-thread_t * thd_createThread(void (*task)());
+Thread_t * thd_createThread(void (*task)());
+void thd_delay(Thread_t * thread, uint32_t ticks);
 
 #endif

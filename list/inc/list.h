@@ -7,10 +7,10 @@
 typedef struct listNode {
     uint64_t * value;
     struct listNode * next;
-} listNode_t;
+} ListNode_t;
 
-listNode_t * createList();
-void * get(listNode_t * head, uint8_t nodeIndex);
-void add(listNode_t * head, void * value);
+ListNode_t * createList();
+void * get(ListNode_t * head, uint8_t nodeIndex);
+void add(ListNode_t * head, void * value);
 
 #endif
