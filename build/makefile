@@ -21,6 +21,10 @@ SYSTICK_DIR = ../sysTick
 SYSTICK_SRC = $(SYSTICK_DIR)/src
 SYSTICK_INC = $(SYSTICK_DIR)/inc
 
+MUTEX_DIR = ../mutex
+MUTEX_INC = $(MUTEX_DIR)/inc
+MUTEX_SRC = $(MUTEX_DIR)/src
+
 INCLUDE_PATHS = -I..
 INCLUDE_PATHS += -I$(INC_DIR)
 INCLUDE_PATHS += -I$(CORE_SUPPORT_DIR)
@@ -29,21 +33,24 @@ INCLUDE_PATHS += -I$(MEMORY_MANAGER_INC)
 INCLUDE_PATHS += -I$(THREAD_MANAGER_INC)
 INCLUDE_PATHS += -I$(CIRCULAR_BUFFER_INC)
 INCLUDE_PATHS += -I$(SYSTICK_INC)
+INCLUDE_PATHS += -I$(MUTEX_INC)
 
 CC = arm-none-eabi-gcc
 
 CC_FLAGS = -mcpu=cortex-m3
 CC_FLAGS += -mthumb
 CC_FLAGS += $(INCLUDE_PATHS)
-
 CC_FLAGS += --specs=nosys.specs
 CC_FLAGS += -g
 CC_FLAGS += -c
 
 INPUT = $(MEMORY_MANAGER_SRC)/memory.c
+INPUT += $(wildcard $(CORE_SUPPORT_DIR)/*.c)
+INPUT += $(wildcard $(DEVICE_SUPPORT_DIR)/*.c)
 INPUT += $(wildcard $(THREAD_MANAGER_SRC)/*.c)
 INPUT += $(wildcard $(CIRCULAR_BUFFER_SRC)/*.c)
 INPUT += $(wildcard $(SYSTICK_SRC)/*.c)
+INPUT += $(wildcard $(MUTEX_SRC)/*.c)
 
 main:
 	$(CC) $(CC_FLAGS) $(INPUT)
