@@ -3,34 +3,29 @@ TARGET = main.elf
 SRC_DIR = ./src
 INC_DIR = ./inc
 
-CMSIS_DIR = ./CMSIS
+CMSIS_DIR = ../CMSIS
 CORE_SUPPORT_DIR = $(CMSIS_DIR)/CM3/CoreSupport
 DEVICE_SUPPORT_DIR = $(CMSIS_DIR)/CM3/DeviceSupport/ST/STM32F10x
 
-MEMORY_MANAGER_DIR = ./memoryManager
+MEMORY_MANAGER_DIR = ../memoryManager
 MEMORY_MANAGER_SRC = $(MEMORY_MANAGER_DIR)/src
 MEMORY_MANAGER_INC = $(MEMORY_MANAGER_DIR)/inc
 
-THREAD_MANAGER_DIR = ./threadManager
+THREAD_MANAGER_DIR = ../threadManager
 THREAD_MANAGER_SRC = $(THREAD_MANAGER_DIR)/src
 THREAD_MANAGER_INC = $(THREAD_MANAGER_DIR)/inc
 
-SYSTICK_DIR = ./sysTick
+SYSTICK_DIR = ../sysTick
 SYSTICK_SRC = $(SYSTICK_DIR)/src
 SYSTICK_INC = $(SYSTICK_DIR)/inc
 
-LIST_DIR = ./list
-LIST_SRC = $(LIST_DIR)/src
-LIST_INC = $(LIST_DIR)/inc
-
-INCLUDE_PATHS = -I.
+INCLUDE_PATHS = -I..
 INCLUDE_PATHS += -I$(INC_DIR)
 INCLUDE_PATHS += -I$(CORE_SUPPORT_DIR)
 INCLUDE_PATHS += -I$(DEVICE_SUPPORT_DIR)
 INCLUDE_PATHS += -I$(MEMORY_MANAGER_INC)
 INCLUDE_PATHS += -I$(THREAD_MANAGER_INC)
 INCLUDE_PATHS += -I$(SYSTICK_INC)
-INCLUDE_PATHS += -I$(LIST_INC)
 
 CC = arm-none-eabi-gcc
 
@@ -40,12 +35,11 @@ CC_FLAGS += $(INCLUDE_PATHS)
 
 CC_FLAGS += --specs=nosys.specs
 CC_FLAGS += -g
+CC_FLAGS += -c
 
-INPUT = main.c
-INPUT += $(MEMORY_MANAGER_SRC)/memory.c
+INPUT = $(MEMORY_MANAGER_SRC)/memory.c
 INPUT += $(wildcard $(THREAD_MANAGER_SRC)/*.c)
 INPUT += $(wildcard $(SYSTICK_SRC)/*.c)
-INPUT += $(LIST_SRC)/list.c
 INPUT += $(DEVICE_SUPPORT_DIR)/startup/gcc_ride7/startup_stm32f10x_ld.s
 INPUT += $(DEVICE_SUPPORT_DIR)/system_stm32f10x.c
 INPUT += $(CORE_SUPPORT_DIR)/core_cm3.c
@@ -60,7 +54,4 @@ LD = -T./linkerScript.ld
 OUTPUT = -o $(TARGET)
 
 main:
-	$(CC) $(CC_FLAGS) $(INPUT) $(LD) $(OUTPUT)
-
-assembly:
-	$(CC) $(CC_FLAGS) -S $(ASM_INPUT) $(LD)
+	$(CC) $(CC_FLAGS) $(INPUT)
