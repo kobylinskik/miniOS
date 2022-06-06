@@ -1,5 +1,5 @@
-#ifndef SYSTICK_SETUP
-#define SYSTICK_SETUP
+#ifndef __SYSTICK_SETUP__
+#define __SYSTICK_SETUP__
 
 #include "stm32f10x.h"
 
