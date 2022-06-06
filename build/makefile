@@ -1,5 +1,3 @@
-TARGET = main.elf
-
 SRC_DIR = ./src
 INC_DIR = ./inc
 
@@ -15,6 +13,10 @@ THREAD_MANAGER_DIR = ../threadManager
 THREAD_MANAGER_SRC = $(THREAD_MANAGER_DIR)/src
 THREAD_MANAGER_INC = $(THREAD_MANAGER_DIR)/inc
 
+CIRCULAR_BUFFER_DIR = ../circularBuffer
+CIRCULAR_BUFFER_INC = $(CIRCULAR_BUFFER_DIR)/inc
+CIRCULAR_BUFFER_SRC = $(CIRCULAR_BUFFER_DIR)/src
+
 SYSTICK_DIR = ../sysTick
 SYSTICK_SRC = $(SYSTICK_DIR)/src
 SYSTICK_INC = $(SYSTICK_DIR)/inc
@@ -25,6 +27,7 @@ INCLUDE_PATHS += -I$(CORE_SUPPORT_DIR)
 INCLUDE_PATHS += -I$(DEVICE_SUPPORT_DIR)
 INCLUDE_PATHS += -I$(MEMORY_MANAGER_INC)
 INCLUDE_PATHS += -I$(THREAD_MANAGER_INC)
+INCLUDE_PATHS += -I$(CIRCULAR_BUFFER_INC)
 INCLUDE_PATHS += -I$(SYSTICK_INC)
 
 CC = arm-none-eabi-gcc
@@ -39,19 +42,8 @@ CC_FLAGS += -c
 
 INPUT = $(MEMORY_MANAGER_SRC)/memory.c
 INPUT += $(wildcard $(THREAD_MANAGER_SRC)/*.c)
+INPUT += $(wildcard $(CIRCULAR_BUFFER_SRC)/*.c)
 INPUT += $(wildcard $(SYSTICK_SRC)/*.c)
-INPUT += $(DEVICE_SUPPORT_DIR)/startup/gcc_ride7/startup_stm32f10x_ld.s
-INPUT += $(DEVICE_SUPPORT_DIR)/system_stm32f10x.c
-INPUT += $(CORE_SUPPORT_DIR)/core_cm3.c
-#INPUT += $(wildcard $(SRC_DIR)/*.c)
-
-ASM_INPUT = main.c
-ASM_INPUT += $(DEVICE_SUPPORT_DIR)/startup/gcc_ride7/startup_stm32f10x_ld.s
-ASM_INPUT += $(THREAD_MANAGER_SRC)/threadManager.c
-
-LD = -T./linkerScript.ld
-
-OUTPUT = -o $(TARGET)
 
 main:
 	$(CC) $(CC_FLAGS) $(INPUT)

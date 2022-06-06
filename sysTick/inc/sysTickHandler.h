@@ -1,5 +1,5 @@
-#ifndef SYSTICK_HANDLER
-#define SYSTICK_HANDLER
+#ifndef __SYSTICK_HANDLER__
+#define __SYSTICK_HANDLER__
 
 #include "threadManager.h"
 
