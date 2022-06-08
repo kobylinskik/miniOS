@@ -12,4 +12,7 @@ typedef struct ThreadListNode {
 ThreadListNode_t * tl_createThreadList(void);
 void tl_addThread(ThreadListNode_t * head, void (*task)(void));
 
+// Removes a threadListNode and returns the previous node
+ThreadListNode_t * tl_deleteThread(ThreadListNode_t * nodeToRemove);
+
 #endif

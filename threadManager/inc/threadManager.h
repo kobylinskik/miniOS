@@ -14,6 +14,7 @@ ThreadManager_t * threadManager;
 
 ThreadManager_t * thdMang_createThreadManager(void (*idleTask)(void));
 void thdMang_addThread(ThreadManager_t * threadManager, void (*task)(void));
+void thdMang_deleteCurrentThread(ThreadManager_t * threadManager);
 void thdMang_switchThread(ThreadManager_t * threadManager);
 void thdMang_countDownDelays(ThreadManager_t * threadManager);
 void thdMang_start(ThreadManager_t * threadManager);

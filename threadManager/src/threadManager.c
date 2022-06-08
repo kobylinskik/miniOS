@@ -12,6 +12,12 @@ void thdMang_addThread(ThreadManager_t * threadManager, void (*task)(void)) {
     tl_addThread(threadManager->threadList, task);
 }
 
+void thdMang_deleteCurrentThread(ThreadManager_t * threadManager) {
+    threadManager->threadList = tl_deleteThread(threadManager->threadList);
+    SysTick->VAL = 0;
+    SCB->ICSR |= SCB_ICSR_PENDSTSET;
+}
+
 void thdMang_switchThread(ThreadManager_t * threadManager) {
     ThreadListNode_t * firstThreadListNode = threadManager->threadList;
     do {
